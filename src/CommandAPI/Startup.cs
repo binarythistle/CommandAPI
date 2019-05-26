@@ -6,15 +6,23 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc;         //SECTION 1
+using Microsoft.Extensions.Configuration;       
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using CommandAPI.Models;
 
 namespace CommandAPI
 {
     public class Startup
     {
+        public IConfiguration Configuration {get;}
+        public Startup(IConfiguration configuration) => Configuration = configuration;
+
         public void ConfigureServices(IServiceCollection services)
         {
-            // SECTION 2
+            services.AddDbContext<CommandContext>
+                (opt => opt.UseSqlServer(Configuration.GetConnectionString("CommandAPISQLConection")));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -25,7 +33,7 @@ namespace CommandAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            // SECTION 3
+            
             app.UseMvc();
         }
     }
