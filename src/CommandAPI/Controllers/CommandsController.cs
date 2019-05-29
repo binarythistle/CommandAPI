@@ -20,6 +20,7 @@ namespace CommandAPI.Controllers
             _hostEnv = hostEnv;
         }
 
+
         //GET:      api/commands
         [HttpGet]
         public ActionResult<IEnumerable<Command>> GetCommandItems()

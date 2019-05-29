@@ -1,5 +1,9 @@
 using System;
 using Xunit;
+using Microsoft.EntityFrameworkCore;
+using CommandAPI.Models;
+using CommandAPI.Controllers;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CommandAPi.Tests
 {
@@ -8,7 +12,15 @@ namespace CommandAPi.Tests
         [Fact]
         public void Test1()
         {
+           
+
+            var optionsBuilder = new DbContextOptionsBuilder<CommandContext>();
+            optionsBuilder.UseInMemoryDatabase();
+            var _dbContext = new CommandContext(optionsBuilder.Options);
+
+            var _controller = new CommandsController(_dbContext);
 
         }
     }
+
 }
