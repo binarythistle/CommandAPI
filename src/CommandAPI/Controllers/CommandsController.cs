@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using CommandAPI.Models;
@@ -11,7 +12,6 @@ namespace CommandAPI.Controllers
     public class CommandsController : ControllerBase
     {
         private readonly CommandContext _context;
-        
         private IHostingEnvironment _hostEnv;
 
         public CommandsController(CommandContext context, IHostingEnvironment hostEnv)
@@ -25,17 +25,15 @@ namespace CommandAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Command>> GetCommandItems()
         {
-            Response.Headers.Add("Environment", _hostEnv.EnvironmentName);
+            if(Response != null)
+            {
+                Response.Headers.Add("Environment", _hostEnv.EnvironmentName);
+            }
+
             return _context.CommandItems;
         }
 
-        /* COMMETED OUT - DELETE LATER
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] {"this", "is", "hard", "coded"};
-        }
-        */
+      
     }
 }
 
