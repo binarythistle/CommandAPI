@@ -25,7 +25,8 @@ namespace CommandAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Command>> GetCommandItems()
         {
-            Response.Headers.Add("Environment", _hostEnv.EnvironmentName);
+            if(Response != null)
+                Response.Headers.Add("Environment", _hostEnv.EnvironmentName);
 
             return _context.CommandItems;
         }
