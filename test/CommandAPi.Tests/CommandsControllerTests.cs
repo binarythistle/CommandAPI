@@ -42,6 +42,8 @@ namespace CommandAPi.Tests
             controller = null;
         }
         
+        //ACTION 1 Tests: GET       /api/commands
+
         [Fact]
         public void ReturnNItemsWhenDBHasNObjects()
         {
@@ -113,8 +115,48 @@ namespace CommandAPi.Tests
 
             //Assert
             Assert.Empty(result.Value);
+            
         }
 
+        //END OF ACTION 1 Tests: GET       /api/commands
+
+        //---------------------------------------------------------------
+
+        //ACTION 2 Tests: GET       /api/commands/id
+        
+        [Fact]
+        public void ReturnsNullResultWhenInvalidID()
+        {
+            //Arrange
+            //DB should be empty, any ID will be invalid
+
+            //Act
+            var result = controller.GetCommandItem(0);
+
+            //Assert
+            Assert.Null(result.Value);
+        }
+        
+        
+        [Fact]
+        public void Returns404NotFoundWhenInvalidID()
+        {
+            //Arrange
+            //DB should be empty, any ID will be invalid
+
+            //Act
+            var result = controller.GetCommandItem(0);
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+        
+        
+
+
+        //END OF ACTION 2 Tests: GET       /api/commands/id
+
+        //---------------------------------------------------------------
     }
 
 }
