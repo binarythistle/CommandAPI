@@ -36,28 +36,27 @@ namespace CommandAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<Command> GetCommandItem(int id)
         {
-            
             var commandItem = _context.CommandItems.Find(id);
-            /*
+            
             if(commandItem == null)
-            {
                 return NotFound();
-            }
-            */
+            
             return commandItem; 
         }
         
-        /*
+        
         //POST:     api/commands
         [HttpPost]
         public ActionResult<Command> PostCommandItem(Command command)
         {
             _context.CommandItems.Add(command);
+            
+            
             _context.SaveChanges();
+           
 
             return CreatedAtAction("GetCommandItem", new Command{Id = command.Id}, command);
-        }
-        */
+        }  
     }
 }
 
