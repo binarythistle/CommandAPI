@@ -45,7 +45,7 @@ namespace CommandAPi.Tests
         //ACTION 1 Tests: GET       /api/commands
 
         [Fact]
-        public void GetCommandsReturnNItemsWhenDBHasNObjects()
+        public void GetCommandItems_ReturnNItems_WhenDBHasNObjects()
         {
             //Arrange
             var command = new Command
@@ -72,7 +72,7 @@ namespace CommandAPi.Tests
         }
         
         [Fact]
-        public void GetCommandsReturnsTheCorrectType()
+        public void GetCommandItems_ReturnsTheCorrectType()
         {
             //Arrange
 
@@ -85,7 +85,7 @@ namespace CommandAPi.Tests
         
 
         [Fact]
-        public void GetCommandsReturnsOneItemWhenDBHasOneObject()
+        public void GetCommandItems_ReturnsOneItem_WhenDBHasOneObject()
         {
             //Arrange
             var command = new Command
@@ -106,7 +106,7 @@ namespace CommandAPi.Tests
         }
 
         [Fact]
-        public void GetCommandsReturnsZeroItemsWhenDBIsEmpty()
+        public void GetCommandItems_ReturnsZeroItems_WhenDBIsEmpty()
         {
             //Arrange
 
@@ -124,7 +124,7 @@ namespace CommandAPi.Tests
         //ACTION 2 Tests: GET       /api/commands/id
         
         [Fact]
-        public void GetCommandItemReturnsNullResultWhenInvalidID()
+        public void GetCommandItem_ReturnsNullResult_WhenInvalidID()
         {
             //Arrange
             //DB should be empty, any ID will be invalid
@@ -138,7 +138,7 @@ namespace CommandAPi.Tests
         
         
         [Fact]
-        public void GetCommandItemIDReturns404NotFoundWhenInvalidID()
+        public void GetCommandItem_IDReturns404NotFound_WhenInvalidID()
         {
             //Arrange
             //DB should be empty, any ID will be invalid
@@ -151,7 +151,7 @@ namespace CommandAPi.Tests
         }
         
         [Fact]
-        public void GetCommandItemReturnsTheCorrectType()
+        public void GetCommandItem_ReturnsTheCorrectType()
         {
             //Arrange
             var command = new Command
@@ -174,7 +174,7 @@ namespace CommandAPi.Tests
         }
 
         [Fact]
-        public void GetCommandItemReturnsTheCorrectResouce()
+        public void GetCommandItem_ReturnsTheCorrectResouce()
         {
             //Arrange
             var command = new Command
@@ -204,7 +204,7 @@ namespace CommandAPi.Tests
 
         //TEST 3.1 VALID OBJECT SUBMITTED – OBJECT COUNT INCREMENTS BY 1
         [Fact]
-        public void PostCommandItemObjectCountIncrementWhenValidObject()
+        public void PostCommandItem_ObjectCountIncrement_WhenValidObject()
         {
             //Arrange
             var command = new Command
@@ -222,11 +222,9 @@ namespace CommandAPi.Tests
             Assert.Equal(oldCount + 1, dbContext.CommandItems.Count());
         }
 
-        //TEST 3.2 TEST 3.2 VALID OBJECT SUBMITTED – VALID OBJECT RETURNED AS RESULT
-
-        //TEST 3.3 VALID OBJECT SUBMITTED – 201 CREATED RETURN CODE
+        //TEST 3.2 VALID OBJECT SUBMITTED – 201 CREATED RETURN CODE
         [Fact]
-        public void PostCommandItemReturns201CreatedWhenValidObject()
+        public void PostCommandItem_Returns201Created_WhenValidObject()
         {
             //Arrange
             var command = new Command
@@ -241,52 +239,230 @@ namespace CommandAPi.Tests
 
             //Assert
             Assert.IsType<CreatedAtActionResult>(result.Result);
-
         }
 
-        //TEST 3.4 INVALID OBJECT SUBMITTED – OBJECT COUNT DOES NOT CHANGE
+        //TEST 3.3 INVALID OBJECT SUBMITTED – OBJECT COUNT DOES NOT CHANGE
 
-        //TEST 3.5 INVALID OBJECT SUBMITTED – 400 BAD REQUEST RETURN CODE
+        //TEST 3.4 INVALID OBJECT SUBMITTED – 400 BAD REQUEST RETURN CODE   
         [Fact]
-        public void PostCommandItemReturns400BadRequestWhenInvalidObject()
-        {
-            //Arrange
-            var command = new Command();
-
-            //Act
-            var result = controller.PostCommandItem(command);
-
-            //Assert
-            Assert.IsType<CreatedAtActionResult>(result.Result);
-        }
-
-        //TEST 3.6 SUBMIT OBJECT WITH ID – OBJECT COUNT DOES NOT CHANGE
-
-        //TEST 3.7 SUBMIT OBJECT WITH ID – 400 BAD REQUEST RETURN CODE
-        [Fact]
-        public void PostCommandItemReturns400BadRequestWhenIDSupplied()
+        public void PostCommandItem_Returns400BadRequest_WhenInvalidObject()
         {
             //Arrange
             var command = new Command
-            { 
-                Id = 1,
-                HowTo = "Do Somethting",
-                Platform = "Some Platform",
-                CommandLine = "Some Command"
+            {
+                HowTo = "Do Something"   
             };
+            //controller.ModelState.AddModelError("Platform", "Required");
 
             //Act
             var result = controller.PostCommandItem(command);
 
             //Assert
-            Assert.IsType<CreatedAtActionResult>(result.Result);
-
+            //Assert.IsType<BadRequestResult>(result.Result);
         }
-
+        
 
         //END OF ACTION 3 Tests: POST       /api/commands
         //---------------------------------------------------------------
+
+        //ACTION 4 TESTS: PUT       /api/commands/id
+
+        //TEST 4.1 VALID OBJECT SUBMITTED – FIELD IS UPDATED
+        [Fact]
+        public void PutCommandItem_AttributeUpdated_WhenValidObject()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+
+            command.HowTo = "UPDATED";
+
+            //Act
+            controller.PutCommandItem(cmdId, command);
+            var result = dbContext.CommandItems.Find(cmdId); 
+
+            //Assert
+            Assert.Equal(command.HowTo, result.HowTo);
+        }
+
+        //TEST 4.2 VALID OBJECT SUBMITTED – 204 NO CONTENT RETURN CODE
+        [Fact]
+        public void PutCommandItem_Returns204_WhenValidObject()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+
+            command.HowTo = "UPDATED";
+
+            //Act
+            var result = controller.PutCommandItem(cmdId, command);
+
+            //Assert
+            Assert.IsType<NoContentResult>(result);
+        }
+        
+        //TEST 4.3 INVALID OBJECT SUBMITTED – 400 BAD REQUEST RETURN CODE
+        [Fact]
+        public void PutCommandItem_Returns400_WhenInvalidObject()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            command.HowTo = "UPDATED";
+
+            //Act
+            var result = controller.PutCommandItem(command.Id + 1, command);
+
+            //Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        //TEST 4.4 INVALID OBJECT SUBMITTED – OBJCT REMAINS UNCHANGED
+        [Fact]
+        public void PutCommandItem_AttributeUnchanged_WhenInvalidObject()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var command2 = new Command
+            { 
+                Id = command.Id,
+                HowTo = "UPDATED",
+                Platform = "UPDATED",
+                CommandLine = "UPDATED"
+            };
+
+            //Act
+            controller.PutCommandItem(command.Id + 1, command2);
+            var result = dbContext.CommandItems.Find(command.Id); 
+            
+            //Assert
+            Assert.Equal(command.HowTo, result.HowTo);
+        }
+
+        //END OF ACTION 4 Tests: PUT       /api/commands/id
+        //---------------------------------------------------------------
+
+        //ACTION 5 TESTS: DELETE       /api/commands/id
+
+        //TEST 5.1 VALID OBJECT ID SUBMITTED – OBJECT DECREMENTS BY 1
+        [Fact]
+        public void DeleteCommandItem_ObjectsDecrement_WhenValidObjectID()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+            var objCount = dbContext.CommandItems.Count();
+
+            //Act
+            controller.DeleteCommandItem(cmdId); 
+
+            //Assert
+            Assert.Equal(objCount-1, dbContext.CommandItems.Count());
+        }
+
+
+        //TEST 5.2 VALID OBJECT ID SUBMITTED – 200 OK RETURN CODE
+        [Fact]
+        public void DeleteCommandItem_Returns200OK_WhenValidObjectID()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+
+            //Act
+            var result = controller.DeleteCommandItem(cmdId); 
+
+            //Assert
+            Assert.Null(result.Result);
+        }
+
+        //TEST 5.3 INVALID OBJECT ID SUBMITTED – 404 NOT FOUND RETURN CODE
+        [Fact]
+        public void DeleteCommandItem_Returns404NotFound_WhenValidObjectID()
+        {
+            //Arrange
+            
+            //Act
+            var result = controller.DeleteCommandItem(-1); 
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+        
+        //TEST 5.4 INVALID OBJECT ID SUBMITTED – OBJECT COUNT REMAINS UNCHANGED
+        [Fact]
+        public void DeleteCommandItem_ObjectCountNotDecremented_WhenValidObjectID()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+            var objCount = dbContext.CommandItems.Count();
+
+            //Act
+            var result = controller.DeleteCommandItem(cmdId+1); 
+
+            //Assert
+            Assert.Equal(objCount, dbContext.CommandItems.Count());
+        }
     }
+
+
 
 }
 
