@@ -44,6 +44,43 @@ namespace CommandAPi.Tests
         
         //ACTION 1 Tests: GET       /api/commands
 
+        //TEST 1.1 REQUEST OBJECTS WHEN NONE EXIST – RETURN "NOTHING"
+        [Fact]
+        public void GetCommandItems_ReturnsZeroItems_WhenDBIsEmpty()
+        {
+            //Arrange
+
+            //Act
+            var result = controller.GetCommandItems();
+
+            //Assert
+            Assert.Empty(result.Value);
+            
+        }
+
+        //TEST 1.2 REQUEST OBJECTS WHEN ONE EXISTS – RETURN SINGLE OBJECT
+        [Fact]
+        public void GetCommandItems_ReturnsOneItem_WhenDBHasOneObject()
+        {
+            //Arrange
+            var command = new Command
+            { 
+                HowTo = "Do Somethting",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            //Act
+            var result = controller.GetCommandItems();
+
+            //Assert
+            Assert.Single(result.Value);
+        }
+
+        //TEST 1.3 REQUEST OBJECTS WHEN N EXIST – RETURN N OBJECTS
         [Fact]
         public void GetCommandItems_ReturnNItems_WhenDBHasNObjects()
         {
@@ -71,6 +108,8 @@ namespace CommandAPi.Tests
             Assert.Equal(2, result.Value.Count());
         }
         
+
+        //TEST 1.4 REQUEST ANY OBJECTS – RETURN CORRECT TYPE
         [Fact]
         public void GetCommandItems_ReturnsTheCorrectType()
         {
@@ -82,41 +121,7 @@ namespace CommandAPi.Tests
             //Assert
             Assert.IsType<ActionResult<IEnumerable<Command>>>(result);
         }
-        
-
-        [Fact]
-        public void GetCommandItems_ReturnsOneItem_WhenDBHasOneObject()
-        {
-            //Arrange
-            var command = new Command
-            { 
-                HowTo = "Do Somethting",
-                Platform = "Some Platform",
-                CommandLine = "Some Command"
-            };
-
-            dbContext.CommandItems.Add(command);
-            dbContext.SaveChanges();
-
-            //Act
-            var result = controller.GetCommandItems();
-
-            //Assert
-            Assert.Single(result.Value);
-        }
-
-        [Fact]
-        public void GetCommandItems_ReturnsZeroItems_WhenDBIsEmpty()
-        {
-            //Arrange
-
-            //Act
-            var result = controller.GetCommandItems();
-
-            //Assert
-            Assert.Empty(result.Value);
-            
-        }
+       
 
         //END OF ACTION 1 Tests: GET       /api/commands
         //---------------------------------------------------------------
