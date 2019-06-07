@@ -26,7 +26,7 @@ namespace CommandAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Command>> GetCommandItems()
         {
-            //TODO - Can we apply this gloablly at the Controller level, rather than at the Action level
+            //We'll remove after moving to production
             if(Response != null)
                 Response.Headers.Add("Environment", _hostEnv.EnvironmentName);
 
