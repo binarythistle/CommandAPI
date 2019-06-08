@@ -12,6 +12,7 @@ namespace CommandAPI
 {
     public class Program
     {
+        //It all starts here
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
